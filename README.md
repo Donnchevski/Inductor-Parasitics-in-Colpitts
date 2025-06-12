@@ -5,5 +5,4 @@ Repository is organized as following:
 
 * **Notes:** contains handwritten notes of derivations regarding characteristic equation, loop gain, root locus, steady-state oscillation condition and frequency.
 * **Scripts:** contains Matlab scripts deriving the same expressions as in the handwritten notes, along with root locus plots.
-
-[![DOI](https://zenodo.org/badge/970687088.svg)](https://doi.org/10.5281/zenodo.15261493)
+* **Simulations:** contains LTSpice simulations on relevant examples described in the paper

@@ -60,28 +60,28 @@
 % Relevant variables:
 %   L - LC resonant circuit inductance
 %   C1/C2 - LC resonant circuit capacitances
-%   Rs - LC inductor equivalent series parasitic resistance
-%   Ro - MOSFET small signal output resistance
-%   Rl - Load resistance
-%   Cp - LC inductor equivalent parallel parasitic capacitance
+%   R_esr - LC inductor equivalent series parasitic resistance
+%   ro - MOSFET small signal output resistance
+%   R_L - Load resistance
+%   C_epc - LC inductor equivalent parallel parasitic capacitance
 %   R - Total circuit resistance
 %   w0 - steady state oscillation frequency
 %   cond -Expression for steady-state oscillation condition
-%   Ct - LC resonant circuit equivalent capacitance
+%   Ce - LC resonant circuit equivalent capacitance
 %   gmR - product of transistor transconductance and total circuit resist.
 %
 %% 1. Initialization of circuit parameters
 
 syms s
-C1 = 100e-12;
-C2 = 100e-12;
-L = 3e-6;
-Rl = 100e3;
-Ro = 50e3;
-Cp = 0;
-Rs = 0;
-R = Ro*Rl/(Ro + Rl);
-Ct = C1*C2/(C1 + C2);
+C1 = 100e-12; % F
+C2 = 100e-12; % F
+L = 3e-6; % H
+R_L = 100e3; % Ohm
+ro = 50e3; % Ohm
+C_epc = 0; % F
+R_esr = 0; % Ohm
+R = ro*R_L/(ro + R_L); % Ohm
+Ce = C1*C2/(C1 + C2);
 fs = 11; % font size
 
 %% 2. Root locus plot of an ideal oscillator
@@ -89,7 +89,7 @@ fs = 11; % font size
 gmR = C1/C2
 
 %% 3. Root locus plot of an ideal oscillator
-Gos = (L*Cp*s^2 + Rs*Cp*s + 1)/(L*R*(C1*C2 + C1*Cp + C2*Cp)*s^3 + (L*(C1 + Cp) + R*Rs*(C1*Cp + C2*Cp + C1*C2))*s^2 + (R*(C1 + C2) + Rs*(C1 + Cp))*s + 1);
+Gos = (L*C_epc*s^2 + R_esr*C_epc*s + 1)/(L*R*(C1*C2 + C1*C_epc + C2*C_epc)*s^3 + (L*(C1 + C_epc) + R*R_esr*(C1*C_epc + C2*C_epc + C1*C2))*s^2 + (R*(C1 + C2) + R_esr*(C1 + C_epc))*s + 1);
 [N, D] = numden(Gos);
 Af = tf(sym2poly(N), sym2poly(D));
 
@@ -111,7 +111,7 @@ text(0.5e8, -2.6e8,'$g_m \to \infty$', 'interpreter','latex', 'FontSize', fs);
 
 
 %% 4. Root locus plot of an ideal oscillator (magnified)
-Gos = (L*Cp*s^2 + Rs*Cp*s + 1)/(L*R*(C1*C2 + C1*Cp + C2*Cp)*s^3 + (L*(C1 + Cp) + R*Rs*(C1*Cp + C2*Cp + C1*C2))*s^2 + (R*(C1 + C2) + Rs*(C1 + Cp))*s + 1);
+Gos = (L*C_epc*s^2 + R_esr*C_epc*s + 1)/(L*R*(C1*C2 + C1*C_epc + C2*C_epc)*s^3 + (L*(C1 + C_epc) + R*R_esr*(C1*C_epc + C2*C_epc + C1*C2))*s^2 + (R*(C1 + C2) + R_esr*(C1 + C_epc))*s + 1);
 [N, D] = numden(Gos);
 Af = tf(sym2poly(N), sym2poly(D));
 
@@ -136,17 +136,17 @@ gain = gains(impole_ind)
 
 %% Defining finite values for inductor parasitics
 
-Cp = 5e-12;
-Rs = 2.6;
+C_epc = 5e-12; % F
+R_esr = 2.6; % Ohm
 
 %% 6. Calculating oscillation condition for a non-ideal oscillator
 
-gmR = (C1/C2 + R*Rs*(1 + Cp/Ct)*((C1 + C2)/L))
+gmR = (C1/C2 + R*R_esr*(1 + C_epc/Ce)*((C1 + C2)/L))
 
 
 %% 7. Root locus plot of a non-ideal oscillator
 
-Gos = (L*Cp*s^2 + Rs*Cp*s + 1)/(L*R*(C1*C2 + C1*Cp + C2*Cp)*s^3 + (L*(C1 + Cp) + R*Rs*(C1*Cp + C2*Cp + C1*C2))*s^2 + (R*(C1 + C2) + Rs*(C1 + Cp))*s + 1);
+Gos = (L*C_epc*s^2 + R_esr*C_epc*s + 1)/(L*R*(C1*C2 + C1*C_epc + C2*C_epc)*s^3 + (L*(C1 + C_epc) + R*R_esr*(C1*C_epc + C2*C_epc + C1*C2))*s^2 + (R*(C1 + C2) + R_esr*(C1 + C_epc))*s + 1);
 [N, D] = numden(Gos);
 Af = tf(sym2poly(N), sym2poly(D));
 
@@ -170,7 +170,7 @@ text(-0.9e8, -2.6e8,'$g_m \to \infty$', 'interpreter','latex', 'FontSize', fs);
 
 %% 8. Root locus plot of a non-ideal oscillator (magnified)
 
-Gos = (L*Cp*s^2 + Rs*Cp*s + 1)/(L*R*(C1*C2 + C1*Cp + C2*Cp)*s^3 + (L*(C1 + Cp) + R*Rs*(C1*Cp + C2*Cp + C1*C2))*s^2 + (R*(C1 + C2) + Rs*(C1 + Cp))*s + 1);
+Gos = (L*C_epc*s^2 + R_esr*C_epc*s + 1)/(L*R*(C1*C2 + C1*C_epc + C2*C_epc)*s^3 + (L*(C1 + C_epc) + R*R_esr*(C1*C_epc + C2*C_epc + C1*C2))*s^2 + (R*(C1 + C2) + R_esr*(C1 + C_epc))*s + 1);
 [N, D] = numden(Gos);
 Af = tf(sym2poly(N), sym2poly(D));
 
